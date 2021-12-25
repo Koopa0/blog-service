@@ -6,7 +6,9 @@ import (
 	"github.com/koopa0/blog-service/global"
 	"github.com/koopa0/blog-service/internal/model"
 	"github.com/koopa0/blog-service/internal/routers"
+	"github.com/koopa0/blog-service/pkg/logger"
 	"github.com/koopa0/blog-service/pkg/setting"
+	"gopkg.in/natefinch/lumberjack.v2"
 	"log"
 	"net/http"
 	"time"
@@ -18,6 +20,11 @@ func init() {
 		log.Fatalf("init.setupSetting err: %v", err)
 	}
 
+	err = setupLogger()
+	if err != nil {
+		log.Fatalf("init.setupLogger err: %v", err)
+	}
+
 	err = setupDBEngine()
 	if err != nil {
 		log.Fatalf("init.setupDBEngine err: %v", err)
@@ -26,6 +33,7 @@ func init() {
 
 func main() {
 	gin.SetMode(global.ServerSetting.RunMode)
+	global.Logger.InfoF("%s: go-programming/%s", "Koopa", "blog_service")
 	router := routers.NewRouter()
 
 	s := &http.Server{
@@ -71,6 +79,18 @@ func setupDBEngine() error {
 	if err != nil {
 		return err
 	}
+
+	return nil
+}
+
+func setupLogger() error {
+	fileName := global.AppSetting.LogSavePath + "/" + global.AppSetting.LogFileName + global.AppSetting.LogFileExt
+	global.Logger = logger.NewLogger(&lumberjack.Logger{
+		Filename:  fileName,
+		MaxSize:   600,
+		MaxAge:    10,
+		LocalTime: true,
+	}, "", log.LstdFlags).WithCaller(2)
 
 	return nil
 }
