@@ -2,6 +2,9 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/koopa0/blog-service/global"
+	"github.com/koopa0/blog-service/pkg/app"
+	"github.com/koopa0/blog-service/pkg/errcode"
 )
 
 type Tag struct {
@@ -33,7 +36,19 @@ func (t Tag) GET(c *gin.Context) {
 // @Failure 500 {object} errcode.Error "內部錯誤"
 // @Router /api/v1/tags [get]
 func (t Tag) List(c *gin.Context) {
+	param := struct {
+	}{}
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &param)
+	if !valid {
+		global.Logger.ErrorF("app.BindAndValid errs: %v", errs)
+		errRsp := errcode.InvalidParams.WithDetails(errs.Errors()...)
+		response.ToErrorResponse(errRsp)
+		return
+	}
 
+	response.ToResponse(gin.H{})
+	return
 }
 
 // Create @Summary 新增標籤
