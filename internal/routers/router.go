@@ -2,13 +2,18 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
+	_ "github.com/koopa0/blog-service/docs"
 	v1 "github.com/koopa0/blog-service/internal/routers/api/v1"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func NewRouter() *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
+	url := ginSwagger.URL("http://127.0.0.1:8081/swagger/doc.json")
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
 	article := v1.NewArticle()
 	tag := v1.NewTag()

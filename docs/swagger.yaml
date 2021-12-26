@@ -1,0 +1,444 @@
+definitions:
+  app.Pager:
+    properties:
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total_rows:
+        type: integer
+    type: object
+  errcode.Error:
+    properties:
+      code:
+        type: integer
+      details:
+        items:
+          type: string
+        type: array
+      msg:
+        type: string
+    type: object
+  model.Article:
+    properties:
+      content:
+        type: string
+      cover_image_url:
+        type: string
+      created-by:
+        type: string
+      created_on:
+        type: integer
+      deleted_on:
+        type: integer
+      desc:
+        type: string
+      id:
+        type: integer
+      is_del:
+        type: integer
+      modified_by:
+        type: string
+      modified_on:
+        type: integer
+      state:
+        type: integer
+      title:
+        type: string
+    type: object
+  model.ArticleSwagger:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/model.Article'
+        type: array
+      pager:
+        $ref: '#/definitions/app.Pager'
+        type: object
+    type: object
+  model.Tag:
+    properties:
+      created-by:
+        type: string
+      created_on:
+        type: integer
+      deleted_on:
+        type: integer
+      id:
+        type: integer
+      is_del:
+        type: integer
+      modified_by:
+        type: string
+      modified_on:
+        type: integer
+      name:
+        type: string
+      state:
+        type: integer
+    type: object
+  model.TagSwagger:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/model.Tag'
+        type: array
+      pager:
+        $ref: '#/definitions/app.Pager'
+        type: object
+    type: object
+info:
+  contact: {}
+  description: Go-blog_service
+  license: {}
+  termsOfService: https://github.com/Koopa0/blog-service
+  title: blog_service
+  version: "1.0"
+paths:
+  /api/v1/articles:
+    get:
+      parameters:
+      - description: 文章名稱
+        in: query
+        maxLength: 100
+        name: name
+        type: string
+      - description: 狀態
+        enum:
+        - 0
+        - 1
+        in: query
+        name: state
+        type: integer
+      - description: 頁碼
+        in: query
+        name: page
+        type: integer
+      - description: 每頁數量
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/model.ArticleSwagger'
+        "400":
+          description: 請求錯誤
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 內部錯誤
+          schema:
+            $ref: '#/definitions/errcode.Error'
+    post:
+      parameters:
+      - description: 文章名稱
+        in: body
+        maxLength: 100
+        minLength: 3
+        name: name
+        required: true
+        schema:
+          type: string
+      - default: 1
+        description: 狀態
+        enum:
+        - 0
+        - 1
+        in: body
+        name: state
+        schema:
+          type: integer
+      - description: 建立者
+        in: body
+        maxLength: 100
+        minLength: 3
+        name: created_by
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/model.Article'
+        "400":
+          description: 請求錯誤
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 內部錯誤
+          schema:
+            $ref: '#/definitions/errcode.Error'
+  /api/v1/articles/{id}:
+    delete:
+      parameters:
+      - description: 文章ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+        "400":
+          description: 請求錯誤
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 內部錯誤
+          schema:
+            $ref: '#/definitions/errcode.Error'
+    get:
+      parameters:
+      - description: 文章ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+        "400":
+          description: 請求錯誤
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 內部錯誤
+          schema:
+            $ref: '#/definitions/errcode.Error'
+    put:
+      parameters:
+      - description: 文章ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 文章名稱
+        in: body
+        maxLength: 100
+        minLength: 3
+        name: name
+        schema:
+          type: string
+      - default: 1
+        description: 狀態
+        enum:
+        - 0
+        - 1
+        in: body
+        name: state
+        schema:
+          type: integer
+      - description: 修改者
+        in: body
+        maxLength: 100
+        minLength: 3
+        name: modified_by
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            items:
+              $ref: '#/definitions/model.Article'
+            type: array
+        "400":
+          description: 請求錯誤
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 內部錯誤
+          schema:
+            $ref: '#/definitions/errcode.Error'
+  /api/v1/tags:
+    get:
+      parameters:
+      - description: 標籤名稱
+        in: query
+        maxLength: 100
+        name: name
+        type: string
+      - description: 狀態
+        enum:
+        - 0
+        - 1
+        in: query
+        name: state
+        type: integer
+      - description: 頁碼
+        in: query
+        name: page
+        type: integer
+      - description: 每頁數量
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/model.TagSwagger'
+        "400":
+          description: 請求錯誤
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 內部錯誤
+          schema:
+            $ref: '#/definitions/errcode.Error'
+    post:
+      parameters:
+      - description: 標籤名稱
+        in: body
+        maxLength: 100
+        minLength: 3
+        name: name
+        required: true
+        schema:
+          type: string
+      - default: 1
+        description: 狀態
+        enum:
+        - 0
+        - 1
+        in: body
+        name: state
+        schema:
+          type: integer
+      - description: 建立者
+        in: body
+        maxLength: 100
+        minLength: 3
+        name: created_by
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/model.Tag'
+        "400":
+          description: 請求錯誤
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 內部錯誤
+          schema:
+            $ref: '#/definitions/errcode.Error'
+  /api/v1/tags/{id}:
+    delete:
+      parameters:
+      - description: 標籤ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+        "400":
+          description: 請求錯誤
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 內部錯誤
+          schema:
+            $ref: '#/definitions/errcode.Error'
+    get:
+      parameters:
+      - description: 標籤ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+        "400":
+          description: 請求錯誤
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 內部錯誤
+          schema:
+            $ref: '#/definitions/errcode.Error'
+    put:
+      parameters:
+      - description: 標籤ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 標籤名稱
+        in: body
+        maxLength: 100
+        minLength: 3
+        name: name
+        schema:
+          type: string
+      - default: 1
+        description: 狀態
+        enum:
+        - 0
+        - 1
+        in: body
+        name: state
+        schema:
+          type: integer
+      - description: 修改者
+        in: body
+        maxLength: 100
+        minLength: 3
+        name: modified_by
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            items:
+              $ref: '#/definitions/model.Tag'
+            type: array
+        "400":
+          description: 請求錯誤
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 內部錯誤
+          schema:
+            $ref: '#/definitions/errcode.Error'
+swagger: "2.0"

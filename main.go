@@ -31,6 +31,10 @@ func init() {
 	}
 }
 
+//@title blog_service
+//@version 1.0
+//@description Go-blog_service
+//@termsOfService https://github.com/Koopa0/blog-service
 func main() {
 	gin.SetMode(global.ServerSetting.RunMode)
 	global.Logger.InfoF("%s: go-programming/%s", "Koopa", "blog_service")
