@@ -35,3 +35,5 @@
 2021/12/26 15:50:23 {"callers":["/Users/koopa/go/src/github.com/koopa0/blog-service/main.go: 23 main.init.0"],"level":"info","message":"Koopa: go-programming/blog_service","time":1640505023825466000}
 2021/12/26 15:50:26 {"callers":["/Users/koopa/go/src/github.com/koopa0/blog-service/main.go: 23 main.init.0"],"level":"error","message":"app.BindAndValid errs: State必须是[01]中的一个","time":1640505026669843000}
 2021/12/26 15:58:05 {"callers":["/Users/koopa/go/src/github.com/koopa0/blog-service/main.go: 23 main.init.0"],"level":"info","message":"Koopa: go-programming/blog_service","time":1640505485680359000}
+2021/12/31 19:05:49 {"callers":["/Users/koopa/go/src/github.com/koopa0/blog-service/main.go: 23 main.init.0"],"level":"info","message":"Koopa: go-programming/blog_service","time":1640948749730962000}
+2021/12/31 19:07:04 {"callers":["/Users/koopa/go/src/github.com/koopa0/blog-service/main.go: 23 main.init.0"],"level":"info","message":"Koopa: go-programming/blog_service","time":1640948824658593000}
