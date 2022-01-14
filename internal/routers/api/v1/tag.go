@@ -3,6 +3,7 @@ package v1
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/koopa0/blog-service/global"
+	"github.com/koopa0/blog-service/internal/service"
 	"github.com/koopa0/blog-service/pkg/app"
 	"github.com/koopa0/blog-service/pkg/errcode"
 )
@@ -36,8 +37,7 @@ func (t Tag) GET(c *gin.Context) {
 // @Failure 500 {object} errcode.Error "內部錯誤"
 // @Router /api/v1/tags [get]
 func (t Tag) List(c *gin.Context) {
-	param := struct {
-	}{}
+	param := service.TagListRequest{}
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
 	if !valid {
@@ -47,7 +47,23 @@ func (t Tag) List(c *gin.Context) {
 		return
 	}
 
-	response.ToResponse(gin.H{})
+	svc := service.New(c.Request.Context())
+	pager := app.Pager{Page: app.GetPage(c), PageSize: app.GetPageSize(c)}
+	totalRows, err := svc.CountTag(&service.CountTagRequest{Name: param.Name, State: param.State})
+	if err != nil {
+		global.Logger.ErrorF("svc.CountTag err: %v", err)
+		response.ToErrorResponse(errcode.ErrorCountTagFail)
+		return
+	}
+
+	tags, err := svc.GetTagList(&param, &pager)
+	if err != nil {
+		global.Logger.ErrorF("svc.GetTagList err : %v", err)
+		response.ToErrorResponse(errcode.ErrorGetTagListFail)
+		return
+	}
+
+	response.ToResponseList(tags, totalRows)
 	return
 }
 
